@@ -1,5 +1,5 @@
 {
-  "name": "roll20-sheet-builder",
+  "name": "@falconpilot/roll20-ts-builder",
   "version": "0.1.0",
   "scripts": {
     "prebuild": "shx rm -rf build && shx mkdir build",
