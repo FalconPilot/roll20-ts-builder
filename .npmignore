@@ -1,0 +1,8 @@
+# Yarn
+node_modules
+
+# OS X artifacts
+*.DS_Store
+
+# Private files
+.env
