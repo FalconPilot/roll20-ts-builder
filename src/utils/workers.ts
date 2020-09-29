@@ -1,4 +1,4 @@
-import { Roll20Event } from '$types/core'
+import { Roll20Event } from '$types'
 
 declare function on (events: string, callback: () => void): void
 

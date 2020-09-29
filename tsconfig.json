@@ -10,7 +10,7 @@
     "target": "ES3",
     "lib": ["es2019", "dom", "dom.iterable"],
     "paths": {
-      "$types/*": ["src/types/*"],
+      "$types": ["src/types/index"],
       "$utils/*": ["src/utils/*"],
     }
   },
