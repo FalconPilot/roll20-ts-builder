@@ -2,14 +2,14 @@ import { Roll20Event } from '../types'
 
 declare function on (events: string, callback: () => void): void
 
-const composeEvents = <CustomProperties extends string>(
-  event: Roll20Event<CustomProperties>
+const composeEvents = <Properties extends string, Buttons extends string>(
+  event: Roll20Event<Properties, Buttons>
 ): string => (
   `${event[0]}:${event[1]}`
 )
 
-export const onEvents = <CustomProperties extends string>(
-  events: Roll20Event<CustomProperties>[],
+export const onEvents = <Properties extends string, Buttons extends string>(
+  events: Roll20Event<Properties, Buttons>[],
   callback: () => void
 ): void => {
   on(events.map(composeEvents).join(' '), callback)
