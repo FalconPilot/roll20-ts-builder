@@ -4,7 +4,7 @@ const fs = require('fs')
 const babel = require('@babel/core')
 const tsNode = require('ts-node')
 
-const [ _1, _2, method, htmlPath, sheetPath, workersPath, distPath, port ] = process.argv
+const [ _1, _2, method, name, htmlPath, sheetPath, workersPath, distPath, port ] = process.argv
 
 /*
 **  Helping
@@ -46,7 +46,7 @@ const getHtmlPage = basis => {
   }
 
   // Build CSS
-  const styleSheet = `${sheet}.css`
+  const styleSheet = `${name}.css`
   fs.writeFileSync(path.resolve(distPath, styleSheet), classes.join('\n'))
   console.log(`> "${styleSheet}" built !`)
   const content = (
@@ -64,7 +64,7 @@ const getHtmlPage = basis => {
   return (
     new HtmlPage(basis, styleSheet)
       .replaceTag('CONTENT', content)
-      .replaceTag('SHEET_NAME', sheet)
+      .replaceTag('SHEET_NAME', name)
       .optionalReplaceTag('SCRIPTS', js)
   )
 }
@@ -75,8 +75,8 @@ const getHtmlPage = basis => {
 
 const usageGuide =
 `\nUsage :
-  - ts-roll20 --build [htmlPath] [sheetPath] [workersPath] [distPath]
-  - ts-roll20 --preview [htmlPath] [sheetPath] [workersPath] [distPath] [port]
+  - ts-roll20 --build [name] [htmlPath] [sheetPath] [workersPath] [distPath]
+  - ts-roll20 --preview [name] [htmlPath] [sheetPath] [workersPath] [distPath] [port]
 `
 
 const checkStringArg = key => arg => () => {
@@ -91,6 +91,7 @@ const checkNumberArg = key => arg => () => {
   }
 }
 
+const checkName = checkStringArg('name')(htmlPath)
 const checkHtmlPath = checkStringArg('htmlPath')(htmlPath)
 const checkSheetPath = checkStringArg('sheetPath')(sheetPath)
 const checkWorkersPath = checkStringArg('workersPath')(workersPath)
@@ -106,6 +107,7 @@ const registerTsNode = () => {
 switch (method) {
   // Build HTML, CSS and JS
   case '--build': {
+    checkName()
     checkHtmlPath()
     checkSheetPath()
     checkWorkersPath()
@@ -113,14 +115,15 @@ switch (method) {
     registerTsNode()
 
     const basis = fs.readFileSync(path.resolve(htmlPath), 'utf-8')
-    const MainPage = getHtmlPage(basis, sheet)
+    const MainPage = getHtmlPage(basis)
 
-    fs.writeFileSync(path.resolve(baseDir, `${sheet}.html`), MainPage.html)
+    fs.writeFileSync(path.resolve(distPath, `${name}.html`), MainPage.html)
     break
   }
 
   // Start preview dev server
   case '--preview': {
+    checkName()
     checkHtmlPath()
     checkSheetPath()
     checkWorkersPath()
@@ -129,7 +132,7 @@ switch (method) {
     registerTsNode()
 
     const basis = fs.readFileSync(path.resolve(htmlPath), 'utf-8')
-    const MainPage = getHtmlPage(basis, sheet)
+    const MainPage = getHtmlPage(basis)
 
     http.createServer((req, res) => {
       if (req.url === '/style') {
