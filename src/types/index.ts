@@ -1,3 +1,5 @@
+export * from './properties'
+
 /**
  * @typedef Roll20Event
  * Type constructor for Roll20 events
