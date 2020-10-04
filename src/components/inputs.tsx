@@ -1,5 +1,9 @@
 import * as React from 'react'
 import { SerializedStyles } from '@emotion/react'
+import styled from '@emotion/styled'
+
+const styledInput = (styles: SerializedStyles) => styled.input`${styles}`
+const styledTextArea = (styles: SerializedStyles) => styled.textarea`${styles}`
 
 interface WithStylesProps {
   styles: SerializedStyles
@@ -11,14 +15,34 @@ export type InputProps = WithStylesProps & Omit<React.InputHTMLAttributes<HTMLIn
 
 export type TextareaProps = WithStylesProps & React.TextareaHTMLAttributes<HTMLTextAreaElement>
 
-export const TextInput: React.FunctionComponent<InputProps> = ({ styles, name, ...props }) => (
-  <input {...props} name={`attr_${name}`} type='text' />
-)
+/**
+ * @param {InputProps} props - Component props, with input properties
+ */
+export const TextInput: React.FunctionComponent<InputProps> = ({ styles, name, ...props }) => {
+  const Input = styledInput(styles)
+  return <Input {...props} name={`attr_${name}`} type='text' />
+}
 
-export const NumberInput: React.FunctionComponent<InputProps> = ({ styles, name, ...props }) => (
-  <input {...props} name={`attr_${name}`} type='number' />
-)
+/**
+ * @param {InputProps} props - Component props, with input properties
+ */
+export const NumberInput: React.FunctionComponent<InputProps> = ({ styles, name, ...props }) => {
+  const Input = styledInput(styles)
+  return <Input {...props} name={`attr_${name}`} type='number' />
+}
 
-export const TextArea: React.FunctionComponent<TextareaProps> = ({ styles, name, ...props }) => (
-  <textarea {...props} name={`attr_${name}`}></textarea>
-)
+/**
+ * @param {InputProps} props - Component props, with input properties
+ */
+export const CheckboxInput: React.FunctionComponent<InputProps> = ({ styles, name, ...props }) => {
+  const Input = styledInput(styles)
+  return <Input {...props} name={`attr_${name}`} type='checkbox' />
+}
+
+/**
+ * @param {TextareaProps} props - Component props, with textarea properties
+ */
+export const TextArea: React.FunctionComponent<TextareaProps> = ({ styles, name, ...props }) => {
+  const Textarea = styledTextArea(styles)
+  return <Textarea {...props} name={`attr_${name}`}></Textarea>
+}
