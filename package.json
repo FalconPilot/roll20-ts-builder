@@ -1,10 +1,10 @@
 {
   "name": "@falconpilot/roll20-ts-builder",
-  "version": "0.2.13",
+  "version": "0.2.14",
   "scripts": {
     "prebuild": "rm -rf build && mkdir build",
     "build": "yarn run prebuild && tsc -p ./tsconfig.json --outDir build",
-    "prepublish": "yarn run build"
+    "prepare": "yarn run build"
   },
   "main": "build/index.js",
   "bin": {
