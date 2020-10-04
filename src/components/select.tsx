@@ -12,7 +12,7 @@ export interface OptionProps {
 }
 
 export type SelectProps = WithStylesProps & React.SelectHTMLAttributes<HTMLSelectElement> & {
-  name: 'string'
+  name: string
   options: OptionProps[]
 }
 
