@@ -5,9 +5,11 @@ const babel = require('@babel/core')
 const tsNode = require('ts-node')
 const { ncp } = require('ncp')
 
-const [ _1, _2, method, configPath ] = process.argv
+const [ _1, _2, method, baseDir ] = process.argv
 
-const config = require(configPath)
+const basePath = path.resolve(process.cwd(), baseDir)
+
+const config = require(path.resolve(basePath, 'roll20.config.json'))
 
 /*
 **  Helping
@@ -34,7 +36,7 @@ class HtmlPage {
 
 // GET Html Page and build CSS aside
 const getHtmlPage = basis => {
-  const { default: _content } = require(path.resolve(config.sheetPath))
+  const { default: _content } = require(path.resolve(basePath, config.sheetPath))
 
   if (typeof _content !== 'string') {
     throw new Error(`Could not load HTML from sheet location "${config.sheetPath}"`)
@@ -51,8 +53,8 @@ const getHtmlPage = basis => {
   const classes = Array.from(new Set(_classes))
 
   // Build CSS
-  const styleSheet = `${name}.css`
-  fs.writeFileSync(path.resolve(config.distPath, styleSheet), classes.join('\n'))
+  const styleSheet = `${config.name}.css`
+  fs.writeFileSync(path.resolve(basePath, config.distPath, styleSheet), classes.join('\n'))
   console.log(`> "${styleSheet}" built !`)
   const content = (
     _content
@@ -62,14 +64,14 @@ const getHtmlPage = basis => {
 
   // Embed JS
   const js = (
-    babel.transformFileSync(config.workersPath).code
+    babel.transformFileSync(path.resolve(basePath, config.workersPath)).code
   ) || null
 
   // Return bundled HTML
   return (
     new HtmlPage(basis, styleSheet)
       .replaceTag('CONTENT', content)
-      .replaceTag('SHEET_NAME', name)
+      .replaceTag('SHEET_NAME', config.name)
       .optionalReplaceTag('SCRIPTS', js)
   )
 }
@@ -81,8 +83,8 @@ const getHtmlPage = basis => {
 const usageGuide =
 `\nUsage :
   - ts-roll20 --init
-  - ts-roll20 --build [configPath]
-  - ts-roll20 --preview [configPath]
+  - ts-roll20 --build [baseDir]
+  - ts-roll20 --preview [baseDir]
 `
 
 const registerTsNode = () => {
@@ -107,11 +109,11 @@ switch (method) {
   case '--build': {
     registerTsNode()
 
-    const basis = fs.readFileSync(path.resolve('./template.html'), 'utf-8')
+    const basis = fs.readFileSync(path.resolve(__dirname, 'template.html'), 'utf-8')
     const MainPage = getHtmlPage(basis)
 
-    fs.writeFileSync(path.resolve(config.distPath, `${name}.html`), MainPage.html)
-    console.log(`> "${name}.html" built !`)
+    fs.writeFileSync(path.resolve(basePath, config.distPath, `${config.name}.html`), MainPage.html)
+    console.log(`> "${config.name}.html" built !`)
     break
   }
 
@@ -119,14 +121,14 @@ switch (method) {
   case '--preview': {
     registerTsNode()
 
-    const basis = fs.readFileSync(path.resolve('./template.html'), 'utf-8')
+    const basis = fs.readFileSync(path.resolve(__dirname, 'template.html'), 'utf-8')
     const MainPage = getHtmlPage(basis)
 
     http.createServer((req, res) => {
       if (req.url === '/style') {
         res.writeHead(200, { 'Content-Type': 'text/css' })
         if (MainPage.styleSheet !== null) {
-          res.write(fs.readFileSync(path.resolve(config.distPath, MainPage.styleSheet), 'utf-8'))
+          res.write(fs.readFileSync(path.resolve(basePath, config.distPath, MainPage.styleSheet), 'utf-8'))
         }
         res.end()
       } else {
