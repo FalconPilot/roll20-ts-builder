@@ -2,11 +2,11 @@ import * as React from 'react'
 import { SerializedStyles } from '@emotion/react'
 import styled from '@emotion/styled'
 
-const styledInput = (styles: SerializedStyles) => styled.input`${styles}`
-const styledTextArea = (styles: SerializedStyles) => styled.textarea`${styles}`
+const styledInput = (styles?: SerializedStyles) => styled.input`${styles ?? ''}`
+const styledTextArea = (styles?: SerializedStyles) => styled.textarea`${styles ?? ''}`
 
 interface WithStylesProps {
-  styles: SerializedStyles
+  styles?: SerializedStyles
 }
 
 export type InputProps = WithStylesProps & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> & {
