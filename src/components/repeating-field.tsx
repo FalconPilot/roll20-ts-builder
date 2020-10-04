@@ -5,7 +5,7 @@ export interface RepeatingFieldProps {
 }
 
 export const RepeatingField: React.FunctionComponent<RepeatingFieldProps> = ({ children, name }) => (
-  <fieldset name={`repeating_${name}`}>
+  <fieldset className={`repeating_${name}`}>
     {children}
   </fieldset>
 )
