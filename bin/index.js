@@ -100,8 +100,10 @@ const checkPort = checkNumberArg('port')(port)
 
 const registerTsNode = () => {
   tsNode.register({
-    typeCheck: true
+    typeCheck: true,
+    transpileOnly: true
   })
+  console.log('> ts-node registered')
 }
 
 switch (method) {

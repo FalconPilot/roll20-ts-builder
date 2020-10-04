@@ -5,10 +5,10 @@
     "outDir": "./build/",
     "jsx": "react",
     "esModuleInterop": true,
-    "noImplicitAny": true,
     "module": "commonjs",
-    "target": "ES3",
-    "lib": ["es2019", "dom", "dom.iterable"]
+    "target": "ES5",
+    "lib": ["es2019", "dom", "dom.iterable"],
+    "skipLibCheck": true
   },
   "include": ["src"]
 }

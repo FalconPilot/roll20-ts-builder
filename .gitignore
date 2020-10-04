@@ -1,5 +1,6 @@
-# Yarn
+# Yarn & build
 node_modules
+build
 
 # OS X artifacts
 *.DS_Store
