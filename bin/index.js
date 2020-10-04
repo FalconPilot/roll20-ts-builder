@@ -37,13 +37,15 @@ const getHtmlPage = basis => {
     throw new Error(`Could not load HTML from sheet location "${sheetPath}"`)
   }
 
-  const styleTagsRegex = /<style data-emotion-css="(?:.*?)>(?<classes>.*?)<\/style>/g
+  const styleTagsRegex = /<style data-emotion(?:-css)?="(?:.*?)>(?<classes>.*?)<\/style>/g
 
-  const classes = []
+  const _classes = []
   let matches = []
   while (matches = styleTagsRegex.exec(_content)) {
-    classes.push(matches[1].replace(/\.css-/g, '.sheet-css-'))
+    _classes.push(matches[1].replace(/\.css-/g, '.sheet-css-'))
   }
+
+  const classes = Array.from(new Set(_classes))
 
   // Build CSS
   const styleSheet = `${name}.css`
