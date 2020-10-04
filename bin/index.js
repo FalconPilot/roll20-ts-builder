@@ -3,8 +3,11 @@ const path = require('path')
 const fs = require('fs')
 const babel = require('@babel/core')
 const tsNode = require('ts-node')
+const { ncp } = require('ncp')
 
-const [ _1, _2, method, name, htmlPath, sheetPath, workersPath, distPath, port ] = process.argv
+const [ _1, _2, method, configPath ] = process.argv
+
+const config = require(configPath)
 
 /*
 **  Helping
@@ -31,10 +34,10 @@ class HtmlPage {
 
 // GET Html Page and build CSS aside
 const getHtmlPage = basis => {
-  const { default: _content } = require(path.resolve(sheetPath))
+  const { default: _content } = require(path.resolve(config.sheetPath))
 
   if (typeof _content !== 'string') {
-    throw new Error(`Could not load HTML from sheet location "${sheetPath}"`)
+    throw new Error(`Could not load HTML from sheet location "${config.sheetPath}"`)
   }
 
   const styleTagsRegex = /<style data-emotion(?:-css)?="(?:.*?)>(?<classes>.*?)<\/style>/g
@@ -49,7 +52,7 @@ const getHtmlPage = basis => {
 
   // Build CSS
   const styleSheet = `${name}.css`
-  fs.writeFileSync(path.resolve(distPath, styleSheet), classes.join('\n'))
+  fs.writeFileSync(path.resolve(config.distPath, styleSheet), classes.join('\n'))
   console.log(`> "${styleSheet}" built !`)
   const content = (
     _content
@@ -59,7 +62,7 @@ const getHtmlPage = basis => {
 
   // Embed JS
   const js = (
-    babel.transformFileSync(workersPath).code
+    babel.transformFileSync(config.workersPath).code
   ) || null
 
   // Return bundled HTML
@@ -77,28 +80,10 @@ const getHtmlPage = basis => {
 
 const usageGuide =
 `\nUsage :
-  - ts-roll20 --build [name] [htmlPath] [sheetPath] [workersPath] [distPath]
-  - ts-roll20 --preview [name] [htmlPath] [sheetPath] [workersPath] [distPath] [port]
+  - ts-roll20 --init
+  - ts-roll20 --build [configPath]
+  - ts-roll20 --preview [configPath]
 `
-
-const checkStringArg = key => arg => () => {
-  if (typeof arg !== 'string') {
-    throw new Error(`Argument [${key}] was not provided`)
-  }
-}
-
-const checkNumberArg = key => arg => () => {
-  if (isNaN(parseInt(arg, 10))) {
-    throw new Error(`Argument [${key}] was not or not a number`)
-  }
-}
-
-const checkName = checkStringArg('name')(htmlPath)
-const checkHtmlPath = checkStringArg('htmlPath')(htmlPath)
-const checkSheetPath = checkStringArg('sheetPath')(sheetPath)
-const checkWorkersPath = checkStringArg('workersPath')(workersPath)
-const checkDistPath = checkStringArg('distPath')(distPath)
-const checkPort = checkNumberArg('port')(port)
 
 const registerTsNode = () => {
   tsNode.register({
@@ -108,42 +93,40 @@ const registerTsNode = () => {
   console.log('> ts-node registered')
 }
 
+const generateHash = () => {
+  const chars = '123456789'
+  const slug = []
+  for (let idx = 0; idx < 8; idx++) {
+    slug.push(chars[Math.floor(Math.random() * chars.length)])
+  }
+  return slug.join('')
+}
+
 switch (method) {
   // Build HTML, CSS and JS
   case '--build': {
-    checkName()
-    checkHtmlPath()
-    checkSheetPath()
-    checkWorkersPath()
-    checkDistPath()
     registerTsNode()
 
-    const basis = fs.readFileSync(path.resolve(htmlPath), 'utf-8')
+    const basis = fs.readFileSync(path.resolve('./template.html'), 'utf-8')
     const MainPage = getHtmlPage(basis)
 
-    fs.writeFileSync(path.resolve(distPath, `${name}.html`), MainPage.html)
-    console.log(`> ${name}.html built !`)
+    fs.writeFileSync(path.resolve(config.distPath, `${name}.html`), MainPage.html)
+    console.log(`> "${name}.html" built !`)
     break
   }
 
   // Start preview dev server
   case '--preview': {
-    checkName()
-    checkHtmlPath()
-    checkSheetPath()
-    checkWorkersPath()
-    checkDistPath()
-    checkPort()
     registerTsNode()
 
-    const basis = fs.readFileSync(path.resolve(htmlPath), 'utf-8')
+    const basis = fs.readFileSync(path.resolve('./template.html'), 'utf-8')
     const MainPage = getHtmlPage(basis)
 
     http.createServer((req, res) => {
       if (req.url === '/style') {
         res.writeHead(200, { 'Content-Type': 'text/css' })
         if (MainPage.styleSheet !== null) {
-          res.write(fs.readFileSync(path.resolve(distPath, MainPage.styleSheet), 'utf-8'))
+          res.write(fs.readFileSync(path.resolve(config.distPath, MainPage.styleSheet), 'utf-8'))
         }
         res.end()
       } else {
@@ -152,6 +135,18 @@ switch (method) {
         res.end()
       }
     }).listen(port)
+    break
+  }
+
+  case '--init': {
+    const hash = generateHash()
+    const slug = `project-${hash}`
+    ncp(path.resolve(__dirname, 'template'), path.resolve(slug), err => {
+      if (err) {
+        throw (err)
+      }
+      console.log(`> Project template ${slug} has been initialized !`)
+    })
     break
   }
 

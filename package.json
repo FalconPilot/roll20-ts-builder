@@ -1,6 +1,6 @@
 {
   "name": "@falconpilot/roll20-ts-builder",
-  "version": "0.2.14",
+  "version": "0.3.0",
   "scripts": {
     "prebuild": "rm -rf build && mkdir build",
     "build": "yarn run prebuild && tsc -p ./tsconfig.json --outDir build",
@@ -20,6 +20,7 @@
     "@types/react": "^16.9.41",
     "@types/react-dom": "^16.9.8",
     "@types/yargs": "^15.0.5",
+    "ncp": "^2.0.0",
     "ts-node": "^8.10.2",
     "tsconfig-paths": "^3.9.0",
     "typescript": "^3.9.5"
