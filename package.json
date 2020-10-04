@@ -1,6 +1,6 @@
 {
   "name": "@falconpilot/roll20-ts-builder",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "scripts": {
     "preview": "yarn run prebuild && nodemon preview.ts",
     "build": "yarn run prebuild && ts-node -r tsconfig-paths/register build.ts"

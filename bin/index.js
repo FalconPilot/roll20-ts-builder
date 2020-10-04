@@ -118,6 +118,7 @@ switch (method) {
     const MainPage = getHtmlPage(basis)
 
     fs.writeFileSync(path.resolve(distPath, `${name}.html`), MainPage.html)
+    console.log(`> ${name}.html built !`)
     break
   }
 
