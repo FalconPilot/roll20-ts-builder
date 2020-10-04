@@ -26,9 +26,3 @@ export type Roll20RepeatingFieldEvent<
   GroupProperties extends string
 > = ['change', Group, GroupProperties]
   | ['remove', Group]
-
-export interface Roll20InputProps {
-  name: string
-  value: string
-  readOnly?: boolean
-}
