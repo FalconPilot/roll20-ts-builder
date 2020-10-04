@@ -7,6 +7,12 @@ const HiddenInput = styled.input`
   }
 `
 
+const ReverseHiddenInput = styled.input`
+  &[value='on'] + * {
+    display: none;
+  }
+`
+
 export interface TogglableSectionProps {
   togglableProperty: string
   defaultDisplayed?: boolean
@@ -18,13 +24,19 @@ export const TogglableSection = (
   children,
   defaultDisplayed,
   togglableProperty
-}) => (
-  <>
-    <HiddenInput
-      type='hidden'
-      name={`attr_${togglableProperty}`}
-      value={defaultDisplayed ? 'on' : '0'}
-    />
-    <TogglableWrapper>{children}</TogglableWrapper>
-  </>
-)
+}) => {
+  const Input = defaultDisplayed
+    ? HiddenInput
+    : ReverseHiddenInput
+
+  return (
+    <>
+      <Input
+        type='hidden'
+        name={`attr_${togglableProperty}`}
+        value={defaultDisplayed ? 'on' : '0'}
+      />
+      <TogglableWrapper>{children}</TogglableWrapper>
+    </>
+  )
+}
