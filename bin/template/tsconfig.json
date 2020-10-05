@@ -1,0 +1,7 @@
+{
+  "extends": "@falconpilot/roll20-ts-builder/tsconfig.json",
+  "include": [
+    "sheet/**/*",
+    "workers/**/*"
+  ]
+}

@@ -7,9 +7,13 @@ const { ncp } = require('ncp')
 
 const [ _1, _2, method, baseDir ] = process.argv
 
-const basePath = path.resolve(process.cwd(), baseDir)
+const basePath = method === '--init'
+  ? process.cwd()
+  : path.resolve(process.cwd(), baseDir)
 
-const config = require(path.resolve(basePath, 'roll20.config.json'))
+const config = method === '--init'
+  ? {}
+  : require(path.resolve(basePath, 'roll20.config.json'))
 
 /*
 **  Helping
@@ -108,6 +112,8 @@ switch (method) {
   // Build HTML, CSS and JS
   case '--build': {
     registerTsNode()
+    fs.rmdirSync(path.resolve(basePath, config.distPath))
+    fs.mkdirSync(path.resolve(basePath, config.distPath))
 
     const basis = fs.readFileSync(path.resolve(__dirname, 'template.html'), 'utf-8')
     const MainPage = getHtmlPage(basis)
@@ -120,6 +126,8 @@ switch (method) {
   // Start preview dev server
   case '--preview': {
     registerTsNode()
+    fs.rmdirSync(path.resolve(basePath, config.distPath))
+    fs.mkdirSync(path.resolve(basePath, config.distPath))
 
     const basis = fs.readFileSync(path.resolve(__dirname, 'template.html'), 'utf-8')
     const MainPage = getHtmlPage(basis)

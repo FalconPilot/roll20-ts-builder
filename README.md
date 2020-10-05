@@ -30,5 +30,10 @@ The library requires the following dependencies for an optimal usage :
 
 ## CLI usage
 
-- `ts-roll20 --build [name] [htmlPath] [sheetPath] [workersPath] [distPath]`
-- `ts-roll20 --preview [name] [htmlPath] [sheetPath] [workersPath] [distPath] [port]`
+#### `ts-roll20 --init`
+
+Initialize a standard, renamable project directory
+
+#### `ts-roll20 --build [baseDir]`
+
+Build a project, using the `roll20.config.ts` file in the `[baseDir]` directory.
