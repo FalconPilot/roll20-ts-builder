@@ -94,7 +94,8 @@ const usageGuide =
 const registerTsNode = () => {
   tsNode.register({
     typeCheck: true,
-    transpileOnly: true
+    transpileOnly: true,
+    project: path.resolve(basePath, 'tsconfig.json')
   })
   console.log('> ts-node registered')
 }
@@ -108,12 +109,21 @@ const generateHash = () => {
   return slug.join('')
 }
 
+const initDistDir = () => {
+  try {
+    fs.rmdirSync(path.resolve(basePath, config.distPath))
+  } catch (err) {
+    console.log(`> ${config.distPath} directory does not exist`)
+  }
+  fs.mkdirSync(path.resolve(basePath, config.distPath))
+  console.log(`> ${config.distPath} directory created`)
+}
+
 switch (method) {
   // Build HTML, CSS and JS
   case '--build': {
     registerTsNode()
-    fs.rmdirSync(path.resolve(basePath, config.distPath))
-    fs.mkdirSync(path.resolve(basePath, config.distPath))
+    initDistDir()
 
     const basis = fs.readFileSync(path.resolve(__dirname, 'template.html'), 'utf-8')
     const MainPage = getHtmlPage(basis)
@@ -126,8 +136,7 @@ switch (method) {
   // Start preview dev server
   case '--preview': {
     registerTsNode()
-    fs.rmdirSync(path.resolve(basePath, config.distPath))
-    fs.mkdirSync(path.resolve(basePath, config.distPath))
+    initDistDir()
 
     const basis = fs.readFileSync(path.resolve(__dirname, 'template.html'), 'utf-8')
     const MainPage = getHtmlPage(basis)
