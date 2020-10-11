@@ -3,6 +3,7 @@ const path = require('path')
 const fs = require('fs')
 const babel = require('@babel/core')
 const tsNode = require('ts-node')
+const rimraf = require('rimraf')
 const { ncp } = require('ncp')
 
 const [ _1, _2, method, baseDir ] = process.argv
@@ -111,7 +112,7 @@ const generateHash = () => {
 
 const initDistDir = () => {
   try {
-    fs.rmdirSync(path.resolve(basePath, config.distPath))
+    rimraf.sync(path.resolve(basePath, config.distPath))
   } catch (err) {
     console.log(`> ${config.distPath} directory does not exist`)
   }
