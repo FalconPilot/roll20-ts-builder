@@ -2,7 +2,7 @@
   "name": "@falconpilot/roll20-ts-builder",
   "version": "0.4.1",
   "scripts": {
-    "prebuild": "rm -rf build && mkdir build",
+    "prebuild": "shx rm -rf build && mkdir build",
     "build": "yarn run prebuild && tsc -p ./tsconfig.json --outDir build",
     "prepare": "yarn run build"
   },
@@ -31,6 +31,7 @@
     "react-dom": "^16.13.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "shx": "^0.3.3"
   }
 }
